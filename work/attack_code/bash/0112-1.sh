@@ -10,7 +10,7 @@ python main.py\
      --clip_eps 0.99\
      --attack_iters 20\
      --attack_confidence 1.1\
-     --output ../0112-1_result/\
+     --output ../result/\
      --sparse_percentage 95\
      --diversity_iter 10\
      --momentum_decay 0.9\
@@ -27,7 +27,7 @@ python main.py\
      --clip_eps 0.99\
      --attack_iters 20\
      --attack_confidence 1.1\
-     --output ../0112-1_result/\
+     --output ../result/\
      --sparse_percentage 95\
      --diversity_iter 10\
      --momentum_decay 0.9\
