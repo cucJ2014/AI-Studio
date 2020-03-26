@@ -21,24 +21,24 @@ import logging
 
 from scipy.ndimage import gaussian_filter
 
-def l2norm(adv_img):
-    org_img = np.zeros_like(adv_img)
-    diff = org_img.reshape((-1, 3)) - adv_img.reshape((-1, 3))
-    distance = np.mean(np.sqrt(np.sum((diff ** 2), axis=1)))
+def l2norm(adv_img): # 使用L2正则化 返回图片与零图片的差值
+    org_img = np.zeros_like(adv_img) # 返回一个与给定类型,形状相似的,全零的矩阵
+    diff = org_img.reshape((-1, 3)) - adv_img.reshape((-1, 3))# 求的输入图片与全零矩阵的差
+    distance = np.mean(np.sqrt(np.sum((diff ** 2), axis=1))) 
     return distance
 
 #实现linf约束 输入格式都是tensor 返回也是tensor [1,3,224,224]
 def linf_img_tenosr(o,adv,epsilon=16.0/256):
     
-    o_img=tensor2img(o).astype(np.float32)
+    o_img=tensor2img(o).astype(np.float32) # 将tensor转换为float32格式的图片
     adv_img=tensor2img(adv).astype(np.float32)
     
-    clip_max=np.clip(o_img*(1.0+epsilon),0,255)
+    clip_max=np.clip(o_img*(1.0+epsilon),0,255) # 使用np clip 将图片 转换到0～255之间,得到该图片最小、最大矩阵
     clip_min=np.clip(o_img*(1.0-epsilon),0,255)
     
-    adv_img=np.clip(adv_img,clip_min,clip_max)
+    adv_img=np.clip(adv_img,clip_min,clip_max) # 将adv图片按照最大最小矩阵转换。
     
-    adv_img=img2tensor(adv_img)
+    adv_img=img2tensor(adv_img) # 将adv转换为tensor 输出
     
     return adv_img
 
@@ -47,6 +47,7 @@ def MPGD(adv_program, gradients, o_img, o_label, input_layer, noise_layer, outpu
         bboxs, step_size=2.0/256, epsilon=16.0/256, iteration=20,lr_decay=1.0,use_gpu=True,
         confidence=0.8, verbose=True, init=None, decay_factor=0.8, diversity_iter=1, 
         sparse_percentage=-1, gradient_sign=False, norm_regulizer=0.0):
+    
     place = fluid.CUDAPlace(0) if use_gpu else fluid.CPUPlace()
     exe = fluid.Executor(place)
 
